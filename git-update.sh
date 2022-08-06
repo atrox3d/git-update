@@ -25,21 +25,35 @@ readonly COLOR_REV_RED='\033[7;31m'
 readonly COLOR_REV_GREEN='\033[7;32m'
 readonly COLOR_REV_YELLOW='\033[7;33m'
 
-PULLENABLED="false"
-STOPATFIRST="false"
+PULL_ENABLED="false"
+STOP_AT_FIRST="false"
+PATHS=()
+
 for arg
 do
-	if [ "${arg,,}" = "--pull" ]
-	then
-		PULLENABLED="true"
-		echo "PULL ENABLED"
-	fi
-	if [ "${arg,,}" = "--first" ]
-	then
-		STOPATFIRST="true"
-		echo "STOPATFIRST ENABLED"
-	fi
+	arg="${arg,,}"							# force lowercase
+
+	case "${arg}" in
+		"--pull")
+			PULL_ENABLED="true"
+			echo "PULL is ENABLED"
+		;;
+	
+		"--first")
+			STOP_AT_FIRST="true"
+			echo "STOP_AT_FIRST is ENABLED"
+		;;
+		*)
+			if [ -d "${arg}"/.git ]
+			then
+				PATHS+=( "${arg}" )
+				echo "PATHS | ${PATHS[@]}"
+			else
+				echo "ERROR | path ${arg} is not a git repo, ignoring"
+			fi
+	esac
 done
+exit
 #
 #	main loop
 #
@@ -99,7 +113,7 @@ do
 					#
 					#	something to do
 					#
-					if [ "$PULLENABLED" = "true" ]
+					if [ "$PULL_ENABLED" = "true" ]
 					then
 						printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
 						git pull && {
@@ -123,9 +137,9 @@ do
 					echo "----------------------------------------------------------------------------"
 				fi
 
-				if [ "$STOPATFIRST" = "true" ]
+				if [ "$STOP_AT_FIRST" = "true" ]
 				then
-					echo "STOPATFIRST ENABLED (GITEXIT=$GITEXIT)"
+					echo "STOP_AT_FIRST ENABLED (GITEXIT=$GITEXIT)"
 					echo "exiting"
 					exit 1
 				fi
@@ -139,9 +153,9 @@ do
 			git status
 			echo "----------------------------------------------------------------------------"
 			
-			if [ "$STOPATFIRST" = "true" ]
+			if [ "$STOP_AT_FIRST" = "true" ]
 			then
-				echo "STOPATFIRST ENABLED (GITEXIT=$GITEXIT)"
+				echo "STOP_AT_FIRST ENABLED (GITEXIT=$GITEXIT)"
 				echo "exiting"
 				exit 1
 			fi
