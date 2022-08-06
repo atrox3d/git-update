@@ -34,38 +34,41 @@ do
 	arg="${arg,,}"							# force lowercase
 
 	case "${arg}" in
-		"--pull")
+	
+		"--pull")							# pull from origin
 			PULL_ENABLED="true"
 			echo "PULL is ENABLED"
 		;;
 	
-		"--first")
+		"--first")							# stop at first check (?)
 			STOP_AT_FIRST="true"
 			echo "STOP_AT_FIRST is ENABLED"
 		;;
-		*)
+		
+		*)									# path to git repo
 			if [ -d "${arg}"/.git ]
 			then
 				PATHS+=( "${arg}" )
-				echo "PATHS | ${PATHS[@]}"
+				echo "PATH | ${arg}"
 			else
 				echo "ERROR | path ${arg} is not a git repo, ignoring"
 			fi
 	esac
 done
-exit
 #
 #	main loop
 #
-for DIR in */.git
+echo
+# for DIR in */.git
+for DIR in "${PATHS[@]}"
 do
 	# just the dir name
-	DIR="${DIR%%/*}"
+	# DIR="${DIR%%/*}"
 	# formatted [dir name]
-	printf -v TAG "[%-30.30s]" "$DIR"
+	printf -v TAG "[%-60.60s]" "$DIR"
 	# subshell
 	(
-		EXTRA=
+		unset EXTRA
 		# let's move into
 		cd "$DIR"
 		# do we have remotes?
@@ -77,14 +80,10 @@ do
 			#EXTRA="${COLOR_REV_RED}* no remotes available * ${COLOR_OFF}"
 			printf -v EXTRA "[%-25.25s]" "no remotes available"
 		}
-		# git output
-		STATUS="$(git status 2>&1 )"
-		# git exit code
-		GITEXIT=$?
+		GIT_STATUS="$(git status 2>&1 )"	# git output
+		GIT_EXIT=$?							# git exit code
 		#
-		#	everyithing ok
-		#
-		if [ $GITEXIT -eq 0 ]
+		if [ $GIT_EXIT -eq 0 ]				# everyithing ok
 		then
 			#
 			#	ok, no errors. let's check if there's something to do
@@ -139,7 +138,7 @@ do
 
 				if [ "$STOP_AT_FIRST" = "true" ]
 				then
-					echo "STOP_AT_FIRST ENABLED (GITEXIT=$GITEXIT)"
+					echo "STOP_AT_FIRST ENABLED (GIT_EXIT=$GIT_EXIT)"
 					echo "exiting"
 					exit 1
 				fi
@@ -155,7 +154,7 @@ do
 			
 			if [ "$STOP_AT_FIRST" = "true" ]
 			then
-				echo "STOP_AT_FIRST ENABLED (GITEXIT=$GITEXIT)"
+				echo "STOP_AT_FIRST ENABLED (GIT_EXIT=$GIT_EXIT)"
 				echo "exiting"
 				exit 1
 			fi
