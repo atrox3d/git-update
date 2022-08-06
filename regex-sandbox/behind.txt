@@ -1,0 +1,4 @@
+On branch master
+Your branch is behind 'remote/branch-name' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+

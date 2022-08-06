@@ -1,0 +1,4 @@
+On branch refactor/modular
+Your branch is ahead of 'remote/branch-name' by 1 commit.
+  (use "git push" to publish your local commits)
+
