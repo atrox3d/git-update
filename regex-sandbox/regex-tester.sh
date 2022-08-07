@@ -10,7 +10,7 @@ then
 	input="$1"
 	regex="$2"
 else
-	echo "syntax | [ command | ] $0 regex"
+	echo "syntax | command | $0 regex"
 	echo "syntax | $0 filename regex"
 	exit 255
 fi
