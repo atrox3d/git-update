@@ -25,6 +25,25 @@ readonly COLOR_REV_RED='\033[7;31m'
 readonly COLOR_REV_GREEN='\033[7;32m'
 readonly COLOR_REV_YELLOW='\033[7;33m'
 
+function color()
+{
+	local _intensity="${1^^}"
+	shift
+	local _color="${1^^}"
+	shift
+	local _text="$*"
+	
+	local _color_name="COLOR_${_intensity}_${_color}"
+	
+	[[ -v ${_color_name} ]] || {
+		echo "FATAL | unknow color ${_color_name}"
+		exit 255
+	}
+	
+	echo "${!_color_name}${_text}${COLOR_OFF}"
+	
+}
+
 # HERE="$(dirname ${BASH_SOURCE[0]})"
 
 HERE="$(dirname ${BASH_SOURCE[0]})"
@@ -107,7 +126,13 @@ do
 				#
 				#	nothing to do, repo up-to-date
 				#
-				printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "ok"
+				# printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "ok"
+				printf "$TAG	"
+				printf -v STATUS "%-25.25s" "ok"
+				echo "'$STATUS'"
+				printf "$(color rev green "${STATUS}     ")"
+				printf "${EXTRA}\n"
+				exit
 			# else
 				#
 				#	ok, no errors. let's check if there's something to do
