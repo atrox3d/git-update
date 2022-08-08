@@ -25,7 +25,19 @@ readonly COLOR_REV_RED='\033[7;31m'
 readonly COLOR_REV_GREEN='\033[7;32m'
 readonly COLOR_REV_YELLOW='\033[7;33m'
 
+# HERE="$(dirname ${BASH_SOURCE[0]})"
+
 HERE="$(dirname ${BASH_SOURCE[0]})"
+if which realpath
+then
+	HERE="$(realpath ${HERE})"
+elif which readlink
+then
+	HERE="$(readlink -f ${HERE})"
+else
+	echo "FATAL | cannot determine script absolute path"
+	exit 255
+fi
 REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
@@ -95,7 +107,7 @@ do
 			# regex="${regex}(nothing to commit, working (directory|tree) clean)"
 			#
 			# if git status | tr $'\n' ' ' | egrep -qi "$regex"
-			if echo "${GIT_STATUS}" | tr -d $'\n' | "${REGEX_DIR}/regex-tester.sh" "{REGEX_DIR}/up-to-date.regex"
+			if echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
 			then
 				#
 				#	nothing to do, repo up-to-date
@@ -105,12 +117,13 @@ do
 				#
 				#	ok, no errors. let's check if there's something to do
 				#
-				regex="(On branch [^[:space:]]+)[[:space:]]+"
-				regex="${regex}(your branch is behind '[^']+' by [0-9]+ commit[s]*,.*?fast-forwarded\.)[[:space:]]+"
-				regex="${regex}(\(use \"git pull\" to update your local branch\))[[:space:]]+"
-				regex="${regex}(nothing to commit, working (directory|tree) clean)"
+				# regex="(On branch [^[:space:]]+)[[:space:]]+"
+				# regex="${regex}(your branch is behind '[^']+' by [0-9]+ commit[s]*,.*?fast-forwarded\.)[[:space:]]+"
+				# regex="${regex}(\(use \"git pull\" to update your local branch\))[[:space:]]+"
+				# regex="${regex}(nothing to commit, working (directory|tree) clean)"
 				#
-				if git status | tr $'\n' ' ' | egrep -qi "$regex"
+				# if git status | tr $'\n' ' ' | egrep -qi "$regex"
+				if echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
 				then
 					#
 					#	something to do
