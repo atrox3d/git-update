@@ -102,55 +102,46 @@ do
 			#
 			#	ok, no errors. let's check if there's something to do
 			#
-			# regex="(On branch [^[:space:]]+)[[:space:]]+"
-			# regex="${regex}(your branch is up[ -]to[ -]date with '[^']+'\.[[:space:]]+)*"
-			# regex="${regex}(nothing to commit, working (directory|tree) clean)"
-			#
-			# if git status | tr $'\n' ' ' | egrep -qi "$regex"
 			if echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
 			then
 				#
 				#	nothing to do, repo up-to-date
 				#
 				printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "ok"
-			else
+			# else
 				#
 				#	ok, no errors. let's check if there's something to do
 				#
-				# regex="(On branch [^[:space:]]+)[[:space:]]+"
-				# regex="${regex}(your branch is behind '[^']+' by [0-9]+ commit[s]*,.*?fast-forwarded\.)[[:space:]]+"
-				# regex="${regex}(\(use \"git pull\" to update your local branch\))[[:space:]]+"
-				# regex="${regex}(nothing to commit, working (directory|tree) clean)"
+			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
+			then
 				#
-				# if git status | tr $'\n' ' ' | egrep -qi "$regex"
-				if echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
+				#	something to do
+				#
+				if [ "$PULL_ENABLED" = "true" ]
 				then
-					#
-					#	something to do
-					#
-					if [ "$PULL_ENABLED" = "true" ]
-					then
-						printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
-						git pull && {
-							printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL OK"
-						} || {
-							printf "$TAG	${COLOR_REV_RED}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL ERROR"
-						}
-					else
-						printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
-						echo "----------------------------------------------------------------------------"
-						git status
-						echo "----------------------------------------------------------------------------"
-					fi
+					printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
+					git pull && {
+						printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL OK"
+					} || {
+						printf "$TAG	${COLOR_REV_RED}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL ERROR"
+					}
 				else
-					#
-					#	something to do
-					#
-					printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "check messages"
+					printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
 					echo "----------------------------------------------------------------------------"
 					git status
 					echo "----------------------------------------------------------------------------"
 				fi
+			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
+			then
+				printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PUSH needed"
+			else
+				#
+				#	something to do
+				#
+				printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "check messages"
+				echo "----------------------------------------------------------------------------"
+				git status
+				echo "----------------------------------------------------------------------------"
 
 				if [ "$STOP_AT_FIRST" = "true" ]
 				then
