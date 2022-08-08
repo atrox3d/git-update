@@ -14,16 +14,36 @@
 #
 #	colorful colors, yay...
 #
-readonly COLOR_OFF='\033[0m'
-readonly COLOR_LIGHT_RED='\033[1;31m'
-readonly COLOR_LIGHT_GREEN='\033[1;32m'
-readonly COLOR_LIGHT_YELLOW='\033[1;33m'
-readonly COLOR_DARK_RED='\033[0;31m'
-readonly COLOR_DARK_GREEN='\033[0;32m'
-readonly COLOR_DARK_YELLOW='\033[0;33m'
-readonly COLOR_REV_RED='\033[7;31m'
-readonly COLOR_REV_GREEN='\033[7;32m'
-readonly COLOR_REV_YELLOW='\033[7;33m'
+function ansi_escape()
+{
+	# local code="${1}"
+	
+	for code
+	do
+		echo -n "\e[${code}m"
+	done
+}
+
+readonly ANSI_RESET=0
+readonly ANSI_LIGHT=1
+readonly ANSI_DARK=0
+
+readonly ANSI_FG=3
+readonly ANSI_BG=4
+readonly ANSI_REVERSE=7
+
+readonly ANSI_RED=1
+readonly ANSI_GREEN=2
+readonly ANSI_YELLOW=3
+
+readonly COLOR_RESET="$(ansi_escape ${ANSI_RESET})"
+readonly COLOR_LIGHT_RED="$(ansi_escape ${ANSI_LIGHT} ${ANSI_FG}${ANSI_RED})"
+readonly COLOR_LIGHT_GREEN="$(ansi_escape ${ANSI_LIGHT} ${ANSI_FG}${ANSI_GREEN})"
+readonly COLOR_LIGHT_YELLOW="$(ansi_escape ${ANSI_LIGHT} ${ANSI_FG}${ANSI_YELLOW})"
+
+readonly COLOR_REV_RED="$(ansi_escape ${ANSI_REVERSE})${COLOR_LIGHT_RED}"
+readonly COLOR_REV_GREEN="$(ansi_escape ${ANSI_REVERSE})${COLOR_LIGHT_GREEN}"
+readonly COLOR_REV_YELLOW="$(ansi_escape ${ANSI_REVERSE})${COLOR_LIGHT_YELLOW}"
 
 function color()
 {
@@ -40,7 +60,7 @@ function color()
 		exit 255
 	}
 	
-	echo "${!_color_name}${_text}${COLOR_OFF}"
+	echo "${!_color_name}${_text}${COLOR_RESET}"
 	
 }
 
