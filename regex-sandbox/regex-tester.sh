@@ -28,8 +28,10 @@ echo "regex | '${regex}'"
 
 echo "${input}" | egrep -qi "${regex}" && {
 	echo found
+	exit 0
 } || {
 	echo not found
+	exit 1
 }
 
 
