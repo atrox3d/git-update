@@ -25,6 +25,8 @@ readonly COLOR_REV_RED='\033[7;31m'
 readonly COLOR_REV_GREEN='\033[7;32m'
 readonly COLOR_REV_YELLOW='\033[7;33m'
 
+HERE="$(dirname ${BASH_SOURCE[0]})"
+REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
 PATHS=()
@@ -88,11 +90,12 @@ do
 			#
 			#	ok, no errors. let's check if there's something to do
 			#
-			regex="(On branch [^[:space:]]+)[[:space:]]+"
-			regex="${regex}(your branch is up[ -]to[ -]date with '[^']+'\.[[:space:]]+)*"
-			regex="${regex}(nothing to commit, working (directory|tree) clean)"
+			# regex="(On branch [^[:space:]]+)[[:space:]]+"
+			# regex="${regex}(your branch is up[ -]to[ -]date with '[^']+'\.[[:space:]]+)*"
+			# regex="${regex}(nothing to commit, working (directory|tree) clean)"
 			#
-			if git status | tr $'\n' ' ' | egrep -qi "$regex"
+			# if git status | tr $'\n' ' ' | egrep -qi "$regex"
+			if "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.txt" "{REGEX_DIR}/up-to-date.regex"
 			then
 				#
 				#	nothing to do, repo up-to-date
