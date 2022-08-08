@@ -95,7 +95,7 @@ do
 			# regex="${regex}(nothing to commit, working (directory|tree) clean)"
 			#
 			# if git status | tr $'\n' ' ' | egrep -qi "$regex"
-			if "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.txt" "{REGEX_DIR}/up-to-date.regex"
+			if echo "${GIT_STATUS}" | tr -d $'\n' | "${REGEX_DIR}/regex-tester.sh" "{REGEX_DIR}/up-to-date.regex"
 			then
 				#
 				#	nothing to do, repo up-to-date
