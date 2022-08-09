@@ -51,20 +51,18 @@ function echolor()
 			a)
 				if [ ${ANSI_ATTRIBUTES[${OPT^^}]+EXISTS} = EXISTS ]
 				then
-					_attrib=ANSI_{OPT^^}
+					_attrib=ANSI_ATTR_${OPTARG^^}
 					_output="${_output}$(ansi_escape ${!_attrib})"
-					echo "${_output}"
 				fi
 			;;
 			b)
 			;&
 			f)
-				if [ ${ANSI_COLORS[${OPT^^}]+EXISTS} = EXISTS ]
+				if [ ${ANSI_COLORS[${OPTARG^^}]+EXISTS} = EXISTS ]
 				then
 					[ ${OPT^^} = B ] && { _bgfg=${ANSI_COLOR_BG}; } || { _bgfg=${ANSI_COLOR_FG}; }
-					_color=ANSI_${OPT^^}
+					_color=ANSI_${OPTARG^^}
 					_output="${_output}$(ansi_color ${_bgfg} ${!_color})"
-					echo "${_output}"
 				fi
 			;;
 		esac
@@ -72,8 +70,13 @@ function echolor()
 	shift "$((OPTIND-1))"
 	
 	_text="${*}"
-	echo "${_output}${_text}"
+	# echo "'$_text'" >&2 
+	echo "${_output}${_text}$(ansi_escape ${ANSI_ATTR_RESET})"
 }
 
 # echolor -a invert -b red -f blue hello
 # printf "$(echolor -a invert -b red -f blue)%s$" $var
+if [ "${BASH_SOURCE[0]} = ${0}" ]
+then
+	echolor "${@}"
+fi
