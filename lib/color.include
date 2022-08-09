@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+#
+#	colorful colors, yay...
+#
+function ansi_escape()
+{
+	for code
+	do
+		echo -n "\e[${code}m"
+	done
+}
+
+function ansi_color()
+{
+	local _bgfg=${1}
+	local _color=${2}
+	echo "$(ansi_escape ${_bgfg}${_color})"
+}
+
+readonly ANSI_TEXT_RESET=0
+readonly ANSI_TEXT_LIGHT=1
+readonly ANSI_TEXT_DARK=2
+readonly ANSI_TEXT_ITALIC=3
+readonly ANSI_TEXT_UNDERLINE=4
+readonly ANSI_TEXT_BLINK=5
+readonly ANSI_TEXT_REVERSE=7
+readonly ANSI_TEXT_HIDE=8
+
+readonly ANSI_FG=3
+readonly ANSI_BG=4
+
+readonly ANSI_BLACK=0
+readonly ANSI_RED=1
+readonly ANSI_GREEN=2
+readonly ANSI_YELLOW=3
+readonly ANSI_BLUE=4
+readonly ANSI_MAGENTA=5
+readonly ANSI_CYAN=6
+readonly ANSI_WHITE=7
+readonly ANSI_DEFAULT=9
+
+readonly COLOR_RESET="$(ansi_escape ${ANSI_RESET})"
+readonly COLOR_LIGHT_RED="$(ansi_escape ${ANSI_LIGHT} ${ANSI_FG}${ANSI_RED})"
+readonly COLOR_LIGHT_GREEN="$(ansi_escape ${ANSI_LIGHT} ${ANSI_FG}${ANSI_GREEN})"
+readonly COLOR_LIGHT_YELLOW="$(ansi_escape ${ANSI_LIGHT} ${ANSI_FG}${ANSI_YELLOW})"
+
+readonly COLOR_REV_RED="$(ansi_escape ${ANSI_REVERSE})${COLOR_LIGHT_RED}"
+readonly COLOR_REV_GREEN="$(ansi_escape ${ANSI_REVERSE})${COLOR_LIGHT_GREEN}"
+readonly COLOR_REV_YELLOW="$(ansi_escape ${ANSI_REVERSE})${COLOR_LIGHT_YELLOW}"
+
+function color()
+{
+	local _intensity="${1^^}"
+	shift
+	local _color="${1^^}"
+	shift
+	local _text="$*"
+	
+	local _color_name="COLOR_${_intensity}_${_color}"
+	
+	[[ -v ${_color_name} ]] || {
+		echo "FATAL | unknow color ${_color_name}"
+		exit 255
+	}
+	
+	echo "${!_color_name}${_text}${COLOR_RESET}"
+}
+
