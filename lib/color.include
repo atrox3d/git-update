@@ -1,22 +1,9 @@
 #!/usr/bin/env bash
+#####################################################################################
 #
 #	colorful colors, yay...
 #
-function ansi_escape()
-{
-	for code
-	do
-		echo -n "\e[${code}m"
-	done
-}
-
-function ansi_color()
-{
-	local _bgfg=${1}
-	local _color=${2}
-	echo "$(ansi_escape ${_bgfg}${_color})"
-}
-
+#####################################################################################
 readonly ANSI_ATTR_RESET=0
 readonly ANSI_ATTR_LIGHT=1
 readonly ANSI_ATTR_DARK=2
@@ -41,42 +28,82 @@ readonly ANSI_CYAN=6
 readonly ANSI_WHITE=7
 readonly ANSI_DEFAULT=9
 readonly ANSI_COLORS=(BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE DEFAULT)
-
+#####################################################################################
+#
+# get ansi escaped code for each code supplied
+#
+# ansi_string=$(ansi_escape 0 31 42)
+#
+#####################################################################################
+function ansi_escape()
+{
+	for code
+	do
+		echo -n "\e[${code}m"
+	done
+}
+#####################################################################################
+#
+# get ansi escaped color from bg-fg code and color code
+#
+# ansi_string=$(ansi_color 1 7)
+#
+#####################################################################################
+function ansi_color()
+{
+	local _bgfg=${1}
+	local _color=${2}
+	echo "$(ansi_escape ${_bgfg}${_color})"
+}
+#####################################################################################
+#
+# get ansi escaped text from ansi attribute and/or ansi color code
+#
+# echolor -a invert -b red -f blue hello
+# printf "$(echolor -a invert -b red -f blue)%s$" $var
+#
+#####################################################################################
 function echolor()
 {
+	[ $# -gt 0 ] || return	# avoids printing final reset if no parameters given
+	
 	local _output
+	
 	while getopts "a:b:f:" OPT
 	do
 		case "${OPT}" in
 			a)
-				if [ ${ANSI_ATTRIBUTES[${OPT^^}]+EXISTS} = EXISTS ]
+				if [ ${ANSI_ATTRIBUTES[${OPT^^}]+EXISTS} = EXISTS ]			# check if attr exists
 				then
-					_attrib=ANSI_ATTR_${OPTARG^^}
-					_output="${_output}$(ansi_escape ${!_attrib})"
+					_attrib=ANSI_ATTR_${OPTARG^^}							# create variable name
+					_output="${_output}$(ansi_escape ${!_attrib})"			# use indirection
 				fi
 			;;
-			b)
+			b)																# fall-through
 			;&
 			f)
-				if [ ${ANSI_COLORS[${OPTARG^^}]+EXISTS} = EXISTS ]
+				if [ ${ANSI_COLORS[${OPTARG^^}]+EXISTS} = EXISTS ]			# check if color exists
 				then
-					[ ${OPT^^} = B ] && { _bgfg=${ANSI_COLOR_BG}; } || { _bgfg=${ANSI_COLOR_FG}; }
-					_color=ANSI_${OPTARG^^}
-					_output="${_output}$(ansi_color ${_bgfg} ${!_color})"
+					[ ${OPT^^} = B ] && {
+						_bgfg=${ANSI_COLOR_BG}								# set bg
+					} || { 
+						_bgfg=${ANSI_COLOR_FG}								# set fg
+					}
+					_color=ANSI_${OPTARG^^}									# create variable name
+					_output="${_output}$(ansi_color ${_bgfg} ${!_color})"	# use indirection
 				fi
 			;;
 		esac
 	done
 	shift "$((OPTIND-1))"
 	
-	_text="${*}"
-	# echo "'$_text'" >&2 
+	_text="${*}"															# get remaining params
 	echo "${_output}${_text}$(ansi_escape ${ANSI_ATTR_RESET})"
 }
-
-# echolor -a invert -b red -f blue hello
-# printf "$(echolor -a invert -b red -f blue)%s$" $var
-if [ "${BASH_SOURCE[0]} = ${0}" ]
+#####################################################################################
+#
+#####################################################################################
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
 	echolor "${@}"
 fi
