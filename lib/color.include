@@ -59,7 +59,7 @@ function ansi_color()
 #
 # get ansi escaped text from ansi attribute and/or ansi color code
 #
-# echolor -a invert -b red -f blue hello
+# echolor -a invert -b red -f blue -n hello
 # printf "$(echolor -a invert -b red -f blue)%s$" $var
 #
 #####################################################################################
