@@ -11,7 +11,6 @@
 #		if the repo needs pull/add/commit/... it displays git output
 #
 ###############################################################################
-# HERE="$(dirname ${BASH_SOURCE[0]})"
 HERE="$(dirname ${BASH_SOURCE[0]})"
 if which realpath |& /dev/null
 then
@@ -65,31 +64,26 @@ done
 #	main loop
 #
 echo
-# for DIR in */.git
 for DIR in "${PATHS[@]}"
 do
-	# just the dir name
-	# DIR="${DIR%%/*}"
-	# formatted [dir name]
-	printf -v TAG "[%-60.60s]" "$DIR"
-	# subshell
+	printf -v TAG "[%-60.60s]" "$DIR"								# formatted [dir name]
+	#
+	# begin subshell
+	#
 	(
 		unset EXTRA
-		# let's move into
-		cd "$DIR"
-		# do we have remotes?
-		[ "$(git remote -v)" != "" ] && {
-			# yes, then we fetch
-			git fetch > /dev/null
+		cd "$DIR"													# let's move into
+		
+		[ "$(git remote -v)" != "" ] && {							# do we have remotes?
+			git fetch > /dev/null									# yes, then we fetch
 		} || {
-			# no, we dont
-			#EXTRA="${COLOR_REV_RED}* no remotes available * ${COLOR_OFF}"
-			printf -v EXTRA "[%-25.25s]" "no remotes available"
+			printf -v EXTRA "[%-25.25s]" "no remotes available"		# no, we dont
 		}
-		GIT_STATUS="$(git status 2>&1 )"	# git output
-		GIT_EXIT=$?							# git exit code
+		
+		GIT_STATUS="$(git status 2>&1 )"							# git output
+		GIT_EXIT=$?													# git exit code
 		#
-		if [ $GIT_EXIT -eq 0 ]				# everyithing ok
+		if [ $GIT_EXIT -eq 0 ]										# everyithing ok
 		then
 			#
 			#	ok, no errors. let's check if there's something to do
@@ -99,14 +93,9 @@ do
 				#
 				#	nothing to do, repo up-to-date
 				#
-				# printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "ok"
-				printf "$TAG	"
 				printf -v STATUS "%-25.25s" "ok"
-				echo "'$STATUS'"
-				printf "$(color rev green "${STATUS}     ")"
-				printf "${EXTRA}\n"
-				exit
-			# else
+				printf -v STATUS "$(echolor -f black -b green "${STATUS}")"
+				echo  -e "${TAG}${STATUS}${EXTRA}\n"
 				#
 				#	ok, no errors. let's check if there's something to do
 				#
@@ -115,28 +104,43 @@ do
 				#
 				#	something to do
 				#
+				# printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
+				printf -v STATUS "%-25.25s" "PULL needed"
+				printf -v STATUS "$(echolor -f black -b yellow "${STATUS}")"
+				echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				
 				if [ "$PULL_ENABLED" = "true" ]
 				then
-					printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
 					git pull && {
-						printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL OK"
+						# printf "$TAG	${COLOR_REV_GREEN}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL OK"
+						printf -v STATUS "%-25.25s" "PULL OK"
+						printf -v STATUS "$(echolor -f black -b green "${STATUS}")"
+						echo  -e "${TAG}${STATUS}${EXTRA}\n"
 					} || {
-						printf "$TAG	${COLOR_REV_RED}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL ERROR"
+						# printf "$TAG	${COLOR_REV_RED}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL ERROR"
+						printf -v STATUS "%-25.25s" "PULL ERROR"
+						printf -v STATUS "$(echolor -f black -b red "${STATUS}")"
+						echo  -e "${TAG}${STATUS}${EXTRA}\n"
 					}
 				else
-					printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PULL needed"
 					echo "----------------------------------------------------------------------------"
 					git status
 					echo "----------------------------------------------------------------------------"
 				fi
 			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
 			then
-				printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PUSH needed"
+				# printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "PUSH needed"
+				printf -v STATUS "%-25.25s" "PUSH needed"
+				printf -v STATUS "$(echolor -f black -b yellow "${STATUS}")"
+				echo  -e "${TAG}${STATUS}${EXTRA}\n"
 			else
 				#
 				#	something to do
 				#
-				printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "check messages"
+				# printf "$TAG	${COLOR_REV_YELLOW}%-25.25s${COLOR_OFF}${EXTRA}\n" "check messages"
+				printf -v STATUS "%-25.25s" "check messages"
+				printf -v STATUS "$(echolor -f black -b yellow "${STATUS}")"
+				echo  -e "${TAG}${STATUS}${EXTRA}\n"
 				echo "----------------------------------------------------------------------------"
 				git status
 				echo "----------------------------------------------------------------------------"
@@ -152,7 +156,10 @@ do
 			#
 			#	ERROR!!!!
 			#
-			printf "$TAG	${COLOR_REV_RED}%-25.25s${COLOR_OFF}${EXTRA}\n" "something's wrong"
+			# printf "$TAG	${COLOR_REV_RED}%-25.25s${COLOR_OFF}${EXTRA}\n" "something's wrong"
+			printf -v STATUS "%-25.25s" "something's wrong"
+			printf -v STATUS "$(echolor -f black -b red "${STATUS}")"
+			echo  -e "${TAG}${STATUS}${EXTRA}\n"
 			echo "----------------------------------------------------------------------------"
 			git status
 			echo "----------------------------------------------------------------------------"
