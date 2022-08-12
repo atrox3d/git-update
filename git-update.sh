@@ -11,23 +11,9 @@
 #		if the repo needs pull/add/commit/... it displays git output
 #
 ###############################################################################
-HERE="$(dirname ${BASH_SOURCE[0]})"
-if which realpath |& /dev/null
-then
-	HERE="$(realpath ${HERE})"
-elif which readlink |& /dev/null
-then
-	HERE="$(readlink -f ${HERE})"
-else
-	echo "FATAL | cannot determine script absolute path"
-	exit 255
-fi
+HERE=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ###############################################################################
-COLOR_INCLUDE="${HERE}/lib/color.include"
-.  "${COLOR_INCLUDE}" || {
-	echo "FATAL | cannot source ${COLOR_INCLUDE}"
-	exit 255
-}
+. "${HERE}/.setup"
 ###############################################################################
 REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"

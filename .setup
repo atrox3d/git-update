@@ -5,19 +5,7 @@
 #-----------------------------------------------------------------------------
 
 # get current path
-# SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-HERE="$(dirname ${BASH_SOURCE[0]})"
-if which realpath |& /dev/null
-then
-	HERE="$(realpath ${HERE})"
-elif which readlink |& /dev/null
-then
-	HERE="$(readlink -f ${HERE})"
-else
-	echo "FATAL | cannot determine script absolute path"
-	exit 255
-fi
-OK=KO
+HERE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo "HERE | ${HERE}"
 
 SEARCH_PATH=("${HERE}" "${HERE}"/lib "${HERE}"/.. "${HERE}"/../lib .)
@@ -25,27 +13,28 @@ MODULES=(logger.include color.include)
 
 for module in "${MODULES[@]}"
 do
+	OK=KO
 	for here in "${SEARCH_PATH[@]}"
 	do
-		printf "TRY  | . %-50.50s" "${here}/${module}"
+		# printf "TRY  | . %-50.50s" "${here}/${module}"
 		if . "${here}/${module}" &> /dev/null
 		then
 			OK=OK
-			echo "| OK   | . ${here}/${module}"
+			# echo "| OK   | . ${here}/${module}"
 			break
 		fi
-		echo "| FAIL | . ${here}/${module}"
+		# echo "| FAIL | . ${here}/${module}"
 	done
+	[ "${OK}" == OK ] || {
+		echo "FATAL | cannot find ${module}"
+		exit 255
+	}
 done
 
-[ "${OK}" == OK ] || {
-	echo "FATAL | cannot find logger.include"
-	exit 255
-}
 #
 #	setup variables and log level
 #
-HERE="$(dirname ${BASH_SOURCE[0]})"
+HERE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 info "HERE | $HERE"
 info "NAME | $NAME"
