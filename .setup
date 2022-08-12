@@ -5,6 +5,7 @@
 #-----------------------------------------------------------------------------
 
 # get current path
+# SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 HERE="$(dirname ${BASH_SOURCE[0]})"
 if which realpath |& /dev/null
 then
