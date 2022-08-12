@@ -5,7 +5,8 @@
 ##############################################################################
 HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path
 HERE="$( cd -- "${HERE}" &> /dev/null && pwd )"		# get current path
-echo "HERE | ${HERE}"
+NAME="$(basename ${BASH_SOURCE[0]})"				# save this script name
+echo "${NAME} | HERE | ${HERE}"
 
 SEARCH_PATH=(\										# search path
 	"${HERE}"\
@@ -30,10 +31,10 @@ do
 	done
 	
 	[ "${OK}" == OK ] || {							# module not found
-		echo "FATAL | cannot find ${module} in:"
+		echo "FATAL | ${NAME} | cannot find ${module} in:"
 		for here in "${SEARCH_PATH[@]}"
 		do
-			echo "FATAL | ${here}"
+			echo "FATAL | ${NAME} | ${here}"
 		done
 		exit 255
 	}
@@ -43,6 +44,7 @@ done
 #
 HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path, again
 HERE="$( cd -- "${HERE}" &> /dev/null && pwd )"		# get current path, again
+NAME="$(basename ${BASH_SOURCE[0]})"				# save this script name
 info "HERE | $HERE"
 info "NAME | $NAME"
 for module in "${LOADED_MODULES[@]}"				# display loaded modules
