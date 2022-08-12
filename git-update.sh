@@ -11,9 +11,10 @@
 #		if the repo needs pull/add/commit/... it displays git output
 #
 ###############################################################################
-HERE=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-###############################################################################
-. "${HERE}/.setup"
+HERE="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"	# get current path
+. "${HERE}/.setup"												# load modules
+HERE="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"	# get current path
+NAME="$(basename ${BASH_SOURCE[0]})"							# save this script name
 ###############################################################################
 REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
