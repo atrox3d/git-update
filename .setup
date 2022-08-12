@@ -10,7 +10,7 @@ echo "HERE | ${HERE}"
 
 SEARCH_PATH=("${HERE}" "${HERE}"/lib "${HERE}"/.. "${HERE}"/../lib .)
 MODULES=(logger.include color.include)
-
+LOADED_MODULES=()
 for module in "${MODULES[@]}"
 do
 	OK=KO
@@ -20,6 +20,7 @@ do
 		if . "${here}/${module}" &> /dev/null
 		then
 			OK=OK
+			LOADED_MODULES+=("${here}/${module}")
 			# echo "| OK   | . ${here}/${module}"
 			break
 		fi
@@ -38,7 +39,7 @@ HERE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 info "HERE | $HERE"
 info "NAME | $NAME"
-for module in "${MODULES[@]}"
+for module in "${LOADED_MODULES[@]}"
 do
 	info "loaded module ${module}"
 done
