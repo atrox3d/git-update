@@ -27,7 +27,11 @@ do
 		# echo "| FAIL | . ${here}/${module}"
 	done
 	[ "${OK}" == OK ] || {
-		echo "FATAL | cannot find ${module}"
+		echo "FATAL | cannot find ${module} in:"
+		for here in "${SEARCH_PATH[@]}"
+		do
+			echo "FATAL | ${here}"
+		done
 		exit 255
 	}
 done
