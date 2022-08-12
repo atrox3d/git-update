@@ -38,6 +38,10 @@ HERE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
 info "HERE | $HERE"
 info "NAME | $NAME"
+for module in "${MODULES[@]}"
+do
+	info "loaded module ${module}"
+done
 logger_setlevel info
 
 #-----------------------------------------------------------------------------
