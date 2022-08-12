@@ -1,32 +1,35 @@
 #!/bin/bash
 
-#-----------------------------------------------------------------------------
-# boilerplate.sh
-#-----------------------------------------------------------------------------
-
-# get current path
-HERE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+##############################################################################
+# .setup
+##############################################################################
+HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path
+HERE="$( cd -- "${HERE}" &> /dev/null && pwd )"		# get current path
 echo "HERE | ${HERE}"
 
-SEARCH_PATH=("${HERE}" "${HERE}"/lib "${HERE}"/.. "${HERE}"/../lib .)
-MODULES=(logger.include color.include)
-LOADED_MODULES=()
-for module in "${MODULES[@]}"
+SEARCH_PATH=(\										# search path
+	"${HERE}"\
+	"${HERE}"/lib\
+	"${HERE}"/..\
+	"${HERE}"/../lib\
+	.\
+)
+MODULES=(logger.include color.include)				# modules to load
+LOADED_MODULES=()									# loaded modules with path
+for module in "${MODULES[@]}"						# loop through module names
 do
-	OK=KO
-	for here in "${SEARCH_PATH[@]}"
+	OK=KO											# flag
+	for here in "${SEARCH_PATH[@]}"					# try every path
 	do
-		# printf "TRY  | . %-50.50s" "${here}/${module}"
-		if . "${here}/${module}" &> /dev/null
+		if . "${here}/${module}" &> /dev/null		# try to source
 		then
-			OK=OK
-			LOADED_MODULES+=("${here}/${module}")
-			# echo "| OK   | . ${here}/${module}"
-			break
+			OK=OK									# update flag for module
+			LOADED_MODULES+=("${here}/${module}")	# add complete module path
+			break									# next module
 		fi
-		# echo "| FAIL | . ${here}/${module}"
 	done
-	[ "${OK}" == OK ] || {
+	
+	[ "${OK}" == OK ] || {							# module not found
 		echo "FATAL | cannot find ${module} in:"
 		for here in "${SEARCH_PATH[@]}"
 		do
@@ -35,20 +38,15 @@ do
 		exit 255
 	}
 done
-
 #
 #	setup variables and log level
 #
-HERE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-NAME="$(basename ${BASH_SOURCE[0]})"	# save this script name
+HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path, again
+HERE="$( cd -- "${HERE}" &> /dev/null && pwd )"		# get current path, again
 info "HERE | $HERE"
 info "NAME | $NAME"
-for module in "${LOADED_MODULES[@]}"
+for module in "${LOADED_MODULES[@]}"				# display loaded modules
 do
 	info "loaded module ${module}"
 done
-logger_setlevel info
-
-#-----------------------------------------------------------------------------
-# boilerplate.sh
-#-----------------------------------------------------------------------------
+logger_setlevel info								# set logger level
