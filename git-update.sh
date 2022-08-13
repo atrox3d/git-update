@@ -19,34 +19,38 @@ NAME="$(basename ${BASH_SOURCE[0]})"							# save this script name
 REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
-PATHS=()
 
-for arg
+while getopts "fp" arg
 do
 	arg="${arg,,}"							# force lowercase
 
 	case "${arg}" in
 	
-		"--pull")							# pull from origin
+		p)									# pull from origin
 			PULL_ENABLED="true"
-			echo "PULL is ENABLED"
+			info "PULL is ENABLED"
 		;;
 	
-		"--first")							# stop at first check (?)
+		f)									# stop at first check (?)
 			STOP_AT_FIRST="true"
-			echo "STOP_AT_FIRST is ENABLED"
+			info "STOP_AT_FIRST is ENABLED"
 		;;
-		
-		*)									# path to git repo
-			if [ -d "${arg}"/.git ]
-			then
-				PATHS+=( "${arg}" )
-				echo "PATH | ${arg}"
-			else
-				echo "ERROR | path ${arg} is not a git repo, ignoring"
-			fi
 	esac
 done
+shift "$((OPTIND-1))"
+
+PATHS=()
+for arg
+do
+	if [ -d "${arg}"/.git ]
+	then
+		PATHS+=( "${arg}" )
+		info "PATH | ${arg}"
+	else
+		warn "path ${arg} is not a git repo, ignoring"
+	fi
+done
+
 #
 #	main loop
 #
