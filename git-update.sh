@@ -19,6 +19,7 @@ NAME="$(basename ${BASH_SOURCE[0]})"							# save this script name
 REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
+TAG_WIDTH=30
 
 while getopts "fp" arg
 do
@@ -57,7 +58,8 @@ done
 echo
 for DIR in "${PATHS[@]}"
 do
-	printf -v TAG "[%-60.60s]" "$DIR"								# formatted [dir name]
+	# printf -v TAG "[%-60.60s]" "$DIR"								# formatted [dir name]
+	printf -v TAG "[%-*.*s]" ${TAG_WIDTH} ${TAG_WIDTH} "$DIR"								# formatted [dir name]
 	#
 	# begin subshell
 	#
