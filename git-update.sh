@@ -20,6 +20,7 @@ REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
 TAG_WIDTH=30
+EXTRA_WIDTH=30
 
 while getopts "fp" arg
 do
@@ -59,7 +60,7 @@ echo
 for DIR in "${PATHS[@]}"
 do
 	# printf -v TAG "[%-60.60s]" "$DIR"								# formatted [dir name]
-	printf -v TAG "[%-*.*s]" ${TAG_WIDTH} ${TAG_WIDTH} "$DIR"								# formatted [dir name]
+	printf -v TAG "[%-*.*s]" ${TAG_WIDTH} ${TAG_WIDTH} "$DIR"		# formatted [dir name]
 	#
 	# begin subshell
 	#
@@ -70,7 +71,7 @@ do
 		[ "$(git remote -v)" != "" ] && {							# do we have remotes?
 			git fetch > /dev/null									# yes, then we fetch
 		} || {
-			printf -v EXTRA "[%-25.25s]" "no remotes available"		# no, we dont
+			printf -v EXTRA "[%-*.*s]" ${EXTRA_WIDTH} ${EXTRA_WIDTH} "no remotes available"		# no, we dont
 		}
 		
 		GIT_STATUS="$(git status 2>&1 )"							# git output
@@ -136,7 +137,6 @@ do
 			#	ERROR!!!!
 			#
 			printf -v STATUS "$(echolor -f black -b red "%-25.25s")" "something's wrong"
-			# echo  -e "${TAG}${STATUS}${EXTRA}\n"
 			error "${TAG}${STATUS}${EXTRA}"
 			echo "----------------------------------------------------------------------------"
 			git status
