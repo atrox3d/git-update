@@ -3,26 +3,26 @@
 #
 #	gitupdate.sh
 #
-#	- 	iterates over each subdirectory of current path
+#	- 	iterates over each subdirectory of path parameters or TODO: current path
 #		if it contains a .git subfolder then performs:
 #			- git fetch
 #			- git status
 #		based on git status result displays colored status line
 #		if the repo needs pull/add/commit/... it displays git output
 #
-###############################################################################
+#########################################################################################
 HERE="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"	# get current path
 . "${HERE}/.setup"												# load modules
 HERE="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"	# get current path
 NAME="$(basename ${BASH_SOURCE[0]})"							# save this script name
-###############################################################################
+#########################################################################################
 REGEX_DIR="${HERE}/regex-sandbox"
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
 TAG_WIDTH=30
 EXTRA_WIDTH=30
 STATUS_WIDTH=15
-
+#########################################################################################
 while getopts "fp" arg
 do
 	arg="${arg,,}"							# force lowercase
@@ -41,26 +41,25 @@ do
 	esac
 done
 shift "$((OPTIND-1))"
-
+#########################################################################################
 PATHS=()
-for arg
+for arg										# loop through remaining params
 do
-	if [ -d "${arg}"/.git ]
+	if [ -d "${arg}"/.git ]					# if param/.git is a directory
 	then
-		PATHS+=( "${arg}" )
+		PATHS+=( "${arg}" )					# add path to PATHS array
 		info "PATH | ${arg}"
 	else
 		warn "path ${arg} is not a git repo, ignoring"
 	fi
 done
-
+#########################################################################################
 #
 #	main loop
 #
 echo
 for DIR in "${PATHS[@]}"
 do
-	# printf -v TAG "[%-60.60s]" "$DIR"								# formatted [dir name]
 	printf -v TAG "[%-*.*s]" ${TAG_WIDTH} ${TAG_WIDTH} "$DIR"		# formatted [dir name]
 	#
 	# begin subshell
