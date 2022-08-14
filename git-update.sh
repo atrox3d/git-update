@@ -53,6 +53,15 @@ do
 		warn "path ${arg} is not a git repo, ignoring"
 	fi
 done
+
+function git_uptodate()
+{
+	[ $# -gt 0 ] || {
+		fatal "git_uptodate | expected 1 parameter"
+		exit 255
+	}
+	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
+}
 #########################################################################################
 #
 #	main loop
@@ -83,7 +92,8 @@ do
 			#
 			#	ok, no errors. let's check if there's something to do
 			#
-			if  echo "${GIT_STATUS}"| "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
+			# if  echo "${GIT_STATUS}"| "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
+			if  git_uptodate "${GIT_STATUS}"
 			then
 				#
 				#	nothing to do, repo up-to-date
