@@ -76,20 +76,21 @@ do
 		
 		GIT_STATUS="$(git status 2>&1 )"							# git output
 		GIT_EXIT=$?													# git exit code
+		GIT_STATUS="$(echo "${GIT_STATUS}" | tr $'\n' ' ')"			# normalize git output
 		#
 		if [ $GIT_EXIT -eq 0 ]										# everyithing ok
 		then
 			#
 			#	ok, no errors. let's check if there's something to do
 			#
-			if echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
+			if  echo "${GIT_STATUS}"| "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
 			then
 				#
 				#	nothing to do, repo up-to-date
 				#
 				printf -v STATUS "$(echolor -f black -b green "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} ok
 				info "${TAG}${STATUS}${EXTRA}"
-			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
+			elif echo "${GIT_STATUS}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
 			then
 				#
 				#	something to do
@@ -111,13 +112,13 @@ do
 					git status
 					echo "----------------------------------------------------------------------------"
 				fi
-			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
+			elif echo "${GIT_STATUS}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
 			then
 				printf -v STATUS "$(echolor -f black -b yellow "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "PUSH needed"
 				info "${TAG}${STATUS}${EXTRA}"
 			else
 				#
-				#	something to do
+				#	something else to do
 				#
 				printf -v STATUS "$(echolor -f black -b yellow "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "check messages"
 				info "${TAG}${STATUS}${EXTRA}"
@@ -129,7 +130,7 @@ do
 				then
 					echo "STOP_AT_FIRST ENABLED (GIT_EXIT=$GIT_EXIT)"
 					echo "exiting"
-					exit 1
+					exit 0
 				fi
 			fi
 		else
