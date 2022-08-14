@@ -71,6 +71,15 @@ function git_behindpull()
 	}
 	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
 }
+
+function git_aheadpush()
+{
+	[ $# -gt 0 ] || {
+		fatal "git_aheadpush | expected 1 parameter"
+		exit 255
+	}
+	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
+}
 #########################################################################################
 #
 #	main loop
@@ -130,7 +139,8 @@ do
 					git status
 					echo "----------------------------------------------------------------------------"
 				fi
-			elif echo "${GIT_STATUS}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
+			# elif echo "${GIT_STATUS}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
+			elif git_aheadpush "${GIT_STATUS}"
 			then
 				printf -v STATUS "$(echolor -f black -b yellow "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "PUSH needed"
 				info "${TAG}${STATUS}${EXTRA}"
