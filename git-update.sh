@@ -21,6 +21,7 @@ PULL_ENABLED="false"
 STOP_AT_FIRST="false"
 TAG_WIDTH=30
 EXTRA_WIDTH=30
+STATUS_WIDTH=15
 
 while getopts "fp" arg
 do
@@ -87,23 +88,23 @@ do
 				#
 				#	nothing to do, repo up-to-date
 				#
-				printf -v STATUS "$(echolor -f black -b green "%-25.25s")" ok
+				printf -v STATUS "$(echolor -f black -b green "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} ok
 				info "${TAG}${STATUS}${EXTRA}"
 			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
 			then
 				#
 				#	something to do
 				#
-				printf -v STATUS "$(echolor -f black -b yellow "%-25.25s")" "PULL needed"
+				printf -v STATUS "$(echolor -f black -b yellow "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "PULL needed"
 				info "${TAG}${STATUS}${EXTRA}"
 				
 				if [ "$PULL_ENABLED" = "true" ]
 				then
 					git pull && {
-						printf -v STATUS "$(echolor -f black -b green "%-25.25s")" "PULL ok"
+						printf -v STATUS "$(echolor -f black -b green "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "PULL ok"
 					info "${TAG}${STATUS}${EXTRA}"
 					} || {
-						printf -v STATUS "$(echolor -f black -b red "%-25.25s")" "PULL ERROR"
+						printf -v STATUS "$(echolor -f black -b red "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "PULL ERROR"
 						info "${TAG}${STATUS}${EXTRA}"
 					}
 				else
@@ -113,13 +114,13 @@ do
 				fi
 			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
 			then
-				printf -v STATUS "$(echolor -f black -b yellow "%-25.25s")" "PUSH needed"
+				printf -v STATUS "$(echolor -f black -b yellow "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "PUSH needed"
 				info "${TAG}${STATUS}${EXTRA}"
 			else
 				#
 				#	something to do
 				#
-				printf -v STATUS "$(echolor -f black -b yellow "%-25.25s")" "check messages"
+				printf -v STATUS "$(echolor -f black -b yellow "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "check messages"
 				info "${TAG}${STATUS}${EXTRA}"
 				echo "----------------------------------------------------------------------------"
 				git status
@@ -136,7 +137,7 @@ do
 			#
 			#	ERROR!!!!
 			#
-			printf -v STATUS "$(echolor -f black -b red "%-25.25s")" "something's wrong"
+			printf -v STATUS "$(echolor -f black -b red "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} "something's wrong"
 			error "${TAG}${STATUS}${EXTRA}"
 			echo "----------------------------------------------------------------------------"
 			git status
