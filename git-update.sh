@@ -85,23 +85,27 @@ do
 				#	nothing to do, repo up-to-date
 				#
 				printf -v STATUS "$(echolor -f black -b green "%-25.25s")" ok
-				echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				info "${TAG}${STATUS}${EXTRA}"
 			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
 			then
 				#
 				#	something to do
 				#
 				printf -v STATUS "$(echolor -f black -b yellow "%-25.25s")" "PULL needed"
-				echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				info "${TAG}${STATUS}${EXTRA}"
 				
 				if [ "$PULL_ENABLED" = "true" ]
 				then
 					git pull && {
 						printf -v STATUS "$(echolor -f black -b green "%-25.25s")" "PULL ok"
-						echo  -e "${TAG}${STATUS}${EXTRA}\n"
+					# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+					info "${TAG}${STATUS}${EXTRA}"
 					} || {
 						printf -v STATUS "$(echolor -f black -b red "%-25.25s")" "PULL ERROR"
-						echo  -e "${TAG}${STATUS}${EXTRA}\n"
+						# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+						info "${TAG}${STATUS}${EXTRA}"
 					}
 				else
 					echo "----------------------------------------------------------------------------"
@@ -111,13 +115,15 @@ do
 			elif echo "${GIT_STATUS}" | tr $'\n' ' ' | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
 			then
 				printf -v STATUS "$(echolor -f black -b yellow "%-25.25s")" "PUSH needed"
-				echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				info "${TAG}${STATUS}${EXTRA}"
 			else
 				#
 				#	something to do
 				#
 				printf -v STATUS "$(echolor -f black -b yellow "%-25.25s")" "check messages"
-				echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+				info "${TAG}${STATUS}${EXTRA}"
 				echo "----------------------------------------------------------------------------"
 				git status
 				echo "----------------------------------------------------------------------------"
@@ -134,15 +140,16 @@ do
 			#	ERROR!!!!
 			#
 			printf -v STATUS "$(echolor -f black -b red "%-25.25s")" "something's wrong"
-			echo  -e "${TAG}${STATUS}${EXTRA}\n"
+			# echo  -e "${TAG}${STATUS}${EXTRA}\n"
+			error "${TAG}${STATUS}${EXTRA}"
 			echo "----------------------------------------------------------------------------"
 			git status
 			echo "----------------------------------------------------------------------------"
 			
 			if [ "$STOP_AT_FIRST" = "true" ]
 			then
-				echo "STOP_AT_FIRST ENABLED (GIT_EXIT=$GIT_EXIT)"
-				echo "exiting"
+				info "STOP_AT_FIRST ENABLED (GIT_EXIT=$GIT_EXIT)"
+				info "exiting"
 				exit 1
 			fi
 		fi
