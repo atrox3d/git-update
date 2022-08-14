@@ -62,6 +62,15 @@ function git_uptodate()
 	}
 	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
 }
+
+function git_behindpull()
+{
+	[ $# -gt 0 ] || {
+		fatal "git_behindpull | expected 1 parameter"
+		exit 255
+	}
+	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
+}
 #########################################################################################
 #
 #	main loop
@@ -92,7 +101,6 @@ do
 			#
 			#	ok, no errors. let's check if there's something to do
 			#
-			# if  echo "${GIT_STATUS}"| "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
 			if  git_uptodate "${GIT_STATUS}"
 			then
 				#
@@ -100,7 +108,7 @@ do
 				#
 				printf -v STATUS "$(echolor -f black -b green "%-*.*s")" ${STATUS_WIDTH} ${STATUS_WIDTH} ok
 				info "${TAG}${STATUS}${EXTRA}"
-			elif echo "${GIT_STATUS}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
+			elif git_behindpull "${GIT_STATUS}"
 			then
 				#
 				#	something to do
