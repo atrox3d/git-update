@@ -45,6 +45,7 @@ shift "$((OPTIND-1))"
 PATHS=()
 for arg										# loop through remaining params
 do
+	echo "arg=$arg"
 	if [ -d "${arg}"/.git ]					# if param/.git is a directory
 	then
 		PATHS+=( "${arg}" )					# add path to PATHS array
