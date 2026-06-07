@@ -1,4 +1,11 @@
 #!/bin/bash
+
+###########################################################
+#
+# TODO: redo from scratch, i dont like this
+#
+###########################################################
+
 #
 #	current directory and script name
 #
@@ -36,11 +43,22 @@ function __DEBUG()
 	[ "${__LOGGER_DEBUG}" == "yes" ] && echo "__DEBUG | ${*}" &> /dev/stderr
 }
 
-
-
-
-declare -A LOG_LEVELS=( [DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3 [FATAL]=4 [SUPER]=5)
-declare -a LOG_LEVELS_IDX=( DEBUG INFO WARNING ERROR FATAL SUPER )
+declare -A LOG_LEVELS=( 
+			[DEBUG]=0 
+			[INFO]=1 
+			[WARNING]=2 
+			[ERROR]=3 
+			[FATAL]=4 
+			[SUPER]=5
+)
+declare -a LOG_LEVELS_IDX=( 
+			DEBUG 
+			INFO 
+			WARNING 
+			ERROR 
+			FATAL 
+			SUPER 
+)
 DEFAULT_LEVEL="DEBUG"
 CURRENT_LEVEL="${DEFAULT_LEVEL}"
 
@@ -192,7 +210,7 @@ function test_logger()
 #
 if [ "${BASH_SOURCE[0]}" != "${0}" ]
 then
-	info "SOURCE | ${NAME} | ignoring params: ${@} | ok"
+	info "SOURCED!!! | ${NAME} | ignoring params: ${@} | ok"
 else
 	#
 	# check if level function exists

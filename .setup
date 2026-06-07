@@ -9,14 +9,18 @@ NAME="$(basename ${BASH_SOURCE[0]})"				# save this script name
 echo "info    | ${NAME} | HERE=${HERE}"
 
 SEARCH_PATH=(										# search path
-	"${HERE}" \
-	"${HERE}"/lib \
-	"${HERE}"/.. \
-	"${HERE}"/../lib \
-	. \
+	"${HERE}"										# file path
+	"${HERE}"/lib
+	"${HERE}"/..
+	"${HERE}"/../lib
+	.												# current wd
 )
-MODULES=(logger.include color.include)				# modules to load
+MODULES=(
+	logger.include 
+	color.include
+)				# modules to load
 LOADED_MODULES=()									# loaded modules with path
+
 for module in "${MODULES[@]}"						# loop through module names
 do
 	OK=KO											# flag
@@ -25,19 +29,19 @@ do
 		echo "info    | ${NAME} | trying '${here}'..."
 		target="${here}/${module}"
 		[ -f "${target}" ] && {
-			. "${target}" || {
+			. "${target}" || {						# try to source the module
 				echo "fatal | ${NAME} | cannot source ${target}"
 				exit 255
 			}
 			OK=OK									# update flag for module
-			LOADED_MODULES+=("${target}")	# add complete module path
+			LOADED_MODULES+=("${target}")			# add complete module path
 			break									# next module
 		} || {
 			echo "warning | ${NAME} | ${target} not found"
 			continue
 		} 
 	done
-	
+	# if only one module fails we fail altogheter
 	[ "${OK}" == OK ] && {
 		echo "SUCCESS | ${NAME} | loaded ${module}"
 	} || {							# module not found
@@ -50,10 +54,10 @@ do
 	}
 done
 #
-#	setup variables and log level
+#	setup variables and log level, again, to be sure
 #
 HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path, again
-HERE="$( cd -- "${HERE}" &> /dev/null && pwd )"		# get current path, again
+HERE="$(cd -- "${HERE}" &> /dev/null && pwd )"		# get current path, again
 NAME="$(basename ${BASH_SOURCE[0]})"				# save this script name
 info "HERE | $HERE"
 info "NAME | $NAME"
