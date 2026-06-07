@@ -23,6 +23,10 @@ TAG_WIDTH=30
 EXTRA_WIDTH=30
 STATUS_WIDTH=15
 #########################################################################################
+[ $# -gt 0 ] || {
+	error "syntax ${0} paths..."
+	exit 255
+}
 while getopts "fp" arg
 do
 	arg="${arg,,}"							# force lowercase

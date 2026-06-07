@@ -6,14 +6,14 @@
 HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path
 HERE="$(cd -- "${HERE}" &> /dev/null && pwd )"		# get current path
 NAME="$(basename ${BASH_SOURCE[0]})"				# save this script name
-echo "${NAME} | HERE | ${HERE}"
+echo "info    | ${NAME} | HERE=${HERE}"
 
-SEARCH_PATH=(\										# search path
-	"${HERE}"\
-	"${HERE}"/lib\
-	"${HERE}"/..\
-	"${HERE}"/../lib\
-	.\
+SEARCH_PATH=(										# search path
+	"${HERE}" \
+	"${HERE}"/lib \
+	"${HERE}"/.. \
+	"${HERE}"/../lib \
+	. \
 )
 MODULES=(logger.include color.include)				# modules to load
 LOADED_MODULES=()									# loaded modules with path
@@ -22,15 +22,25 @@ do
 	OK=KO											# flag
 	for here in "${SEARCH_PATH[@]}"					# try every path
 	do
-		if . "${here}/${module}" &> /dev/null		# try to source
-		then
+		echo "info    | ${NAME} | trying '${here}'..."
+		target="${here}/${module}"
+		[ -f "${target}" ] && {
+			. "${target}" || {
+				echo "fatal | ${NAME} | cannot source ${target}"
+				exit 255
+			}
 			OK=OK									# update flag for module
-			LOADED_MODULES+=("${here}/${module}")	# add complete module path
+			LOADED_MODULES+=("${target}")	# add complete module path
 			break									# next module
-		fi
+		} || {
+			echo "warning | ${NAME} | ${target} not found"
+			continue
+		} 
 	done
 	
-	[ "${OK}" == OK ] || {							# module not found
+	[ "${OK}" == OK ] && {
+		echo "SUCCESS | ${NAME} | loaded ${module}"
+	} || {							# module not found
 		echo "FATAL | ${NAME} | cannot find ${module} in:"
 		for here in "${SEARCH_PATH[@]}"
 		do
