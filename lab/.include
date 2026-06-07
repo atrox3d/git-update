@@ -1,0 +1,3 @@
+echo "main | \$0 = ${0}"
+echo "main | \${BASH_SOURCE[@]} = ${BASH_SOURCE[@]}"
+echo "main | \${BASH_SOURCE[0]} = ${BASH_SOURCE[0]}"

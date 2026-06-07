@@ -4,7 +4,7 @@
 # .setup
 ##############################################################################
 HERE="$(dirname -- "${BASH_SOURCE[0]}")"			# get current path
-HERE="$( cd -- "${HERE}" &> /dev/null && pwd )"		# get current path
+HERE="$(cd -- "${HERE}" &> /dev/null && pwd )"		# get current path
 NAME="$(basename ${BASH_SOURCE[0]})"				# save this script name
 echo "${NAME} | HERE | ${HERE}"
 
