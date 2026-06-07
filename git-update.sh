@@ -16,12 +16,14 @@ HERE="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"	# get current path
 HERE="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"	# get current path
 NAME="$(basename ${BASH_SOURCE[0]})"							# save this script name
 #########################################################################################
-REGEX_DIR="${HERE}/regex-sandbox"
+REGEX_DIR="${HERE}/regex-sandbox"								# path of regex templates
 PULL_ENABLED="false"
 STOP_AT_FIRST="false"
 TAG_WIDTH=30
 EXTRA_WIDTH=30
 STATUS_WIDTH=15
+#########################################################################################
+# PARAMETERS MANAGEMENT
 #########################################################################################
 [ $# -gt 0 ] || {
 	error "syntax ${0} paths..."
@@ -58,7 +60,7 @@ do
 		warn "path ${arg} is not a git repo, ignoring"
 	fi
 done
-
+exit
 function git_uptodate()
 {
 	[ $# -gt 0 ] || {

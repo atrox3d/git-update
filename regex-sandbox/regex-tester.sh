@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
 
-
+##############################################################################
+#
+#	regex-tester.sh
+#
+#	test stdin or file content against a regex
+#
+##############################################################################
+# -t file_descriptor
+#   True if the file whose file descriptor number is file_descriptor 
+#	is open and is associated with a terminal.
+##############################################################################
 if [ ! -t 0 -a $# -ge 1 ]
 then
+	# we're getting data piped via stdin
 	input=-										# pipe input stdin
 	regex="${1}"								# regex in first param
 elif [ -t 0 -a $# -ge 2 ]
 then
+	# we're not getting data piped via stdin
 	input="${1}"								# input filename in ${1}
 	regex="${2}"								# regex in second param
 else
@@ -33,6 +45,3 @@ echo "${input}" | egrep -qi "${regex}" && {
 	# echo not found
 	exit 1
 }
-
-
-
