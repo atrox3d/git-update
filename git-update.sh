@@ -60,37 +60,11 @@ do
 		warn "path ${arg} is not a git repo, ignoring"
 	fi
 done
-exit
-function git_uptodate()
-{
-	[ $# -gt 0 ] || {
-		fatal "git_uptodate | expected 1 parameter"
-		exit 255
-	}
-	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/up-to-date.regex"
-}
-
-function git_behindpull()
-{
-	[ $# -gt 0 ] || {
-		fatal "git_behindpull | expected 1 parameter"
-		exit 255
-	}
-	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/behind-pull.regex"
-}
-
-function git_aheadpush()
-{
-	[ $# -gt 0 ] || {
-		fatal "git_aheadpush | expected 1 parameter"
-		exit 255
-	}
-	echo "${*}" | "${REGEX_DIR}/regex-tester.sh" "${REGEX_DIR}/ahead-push.regex"
-}
 #########################################################################################
 #
 #	main loop
 #
+#########################################################################################
 echo
 for DIR in "${PATHS[@]}"
 do

@@ -18,6 +18,7 @@ SEARCH_PATH=(										# search path
 MODULES=(
 	logger.include 
 	color.include
+	git-regex.include
 )				# modules to load
 LOADED_MODULES=()									# loaded modules with path
 
