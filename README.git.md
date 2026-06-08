@@ -4,7 +4,10 @@ a handy list of git commands
 ## Adding a local project on remote
 https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/
 
-## Creating branch
+
+## BRANCHES
+
+### Creating branch
 ```bash
 #creates local branch
 git checkout -b [branch-name]
@@ -16,18 +19,19 @@ git branch --set-upstream-to=origin/[branch-name]
 git push -u origin HEAD
 ```
 
-## Moving to a branch
+### Moving to a branch
 ```bash
 git checkout [branch-name]
+# OR
+git switch [branch-name]
 ```
 
-## Updating list of available branches
+### Updating list of available branches
 ```bash
 git remote update origin --prune
 ```
 
-
-## Merging and deleting a branch
+### Merging a branch
 ```bash
 #change to master branch
 git checkout master
@@ -35,6 +39,10 @@ git checkout master
 git merge [branch-name]
 #update master
 git push
+```
+
+### Deleting a branch
+```bash
 #delete local branch
 git branch -d [branch-name]
 #delete remote branch
@@ -43,19 +51,36 @@ git push origin :[branch-name]
 # git push origin --delete {{nome branch}}
 ```
 
-## Removes local orphan branches
+### Removes local orphan branches
 ```bash
 `git fetch --all --prune`
-
-## Reset single file to the last commit
-```bash
-`git checkout HEAD -- my-file.txt`
 ```
 
----
-## Git local repository on filesystem
----
 
+## FILES
+
+### save execute permission
+
+```bash
+git update-index --chmod=+x path/to/your_script.sh
+```
+
+### Reset single file to a commit
+```bash
+# from last commit
+git checkout HEAD -- my-file.txt
+
+# from a specific commit
+git checkout [commit hash] -- my-file.txt
+
+# from a branch
+git checkout [branch name] -- my-file.txt
+```
+
+
+## REPOS
+
+### Git local bare repository on filesystem
 ```bash
 #cd ${path/to/my/project}
 cd ~/code/project
@@ -74,10 +99,7 @@ git commit -m "comment"
 git push origin master
 ```
 
----
-## converto github repo to Git local repository on filesystem
----
-
+### convert github repo to Git local repository on filesystem
 ```bash
 cd /parent/path/of/project
 
@@ -94,11 +116,5 @@ git init --bare ~/git/repos/nameofproject-or-repo.git
 git remote set-url origin  ~/git/repos/nameofproject-or-repo.git
 git push
 git remote -v
-```
-
-# save execute permission
-
-```bash
-git update-index --chmod=+x path/to/your_script.sh
 ```
 
