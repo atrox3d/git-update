@@ -51,6 +51,20 @@ git push origin :[branch-name]
 # git push origin --delete {{nome branch}}
 ```
 
+### renaming a branch
+```bash
+# rename local branch
+git branch -m <new_name>
+# OR
+git branch -m <old_name> <new_name>
+
+# rename remote branch
+git push origin -u <new_name>
+git push origin --delete <old_name>
+
+```
+
+
 ### Removes local orphan branches
 ```bash
 `git fetch --all --prune`
