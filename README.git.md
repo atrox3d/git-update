@@ -64,10 +64,24 @@ git push origin --delete <old_name>
 
 ```
 
-
 ### Removes local orphan branches
 ```bash
 `git fetch --all --prune`
+```
+
+### pull/push all branches
+```bash
+# oneliner
+for branch in $(git branch --format='%(refname:short)');do echo -e  "\n${branch}\n----";git switch $branch;git pull;git push;done
+
+# verbose
+for branch in $(git branch --format='%(refname:short)')
+do 
+    echo -e  "\n${branch}\n----"
+    git switch $branch
+    git pull
+    git push
+done
 ```
 
 
