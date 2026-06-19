@@ -146,7 +146,9 @@ git push
 git remote -v
 ```
 
-# REMOTES
+## REMOTES
+
+### add "all" remote to push to multiple remotes
 
 ```bash
 # 1. Wipe out the broken 'all' remote to start fresh
@@ -161,4 +163,18 @@ git remote set-url --add --push all $(git remote get-url origin)
 # 4. Now add your MacBook and iMac as Push URLs
 git remote set-url --add --push all $(git remote get-url other1)
 git remote set-url --add --push all $(git remote get-url other2)
+```
+
+## UTILS
+
+### find in what branch a file/dir is
+
+```bash
+git grep -l "<file or dir name>" $(git for-each-ref --format='%(refname)' refs/heads/) | sort -u
+```
+
+### restore deleted files/dirs from another branch
+
+```bash
+git restore --source=<branch_name> --worktree -- <path to restore>
 ```
