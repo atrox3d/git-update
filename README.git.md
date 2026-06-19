@@ -146,3 +146,19 @@ git push
 git remote -v
 ```
 
+# REMOTES
+
+```bash
+# 1. Wipe out the broken 'all' remote to start fresh
+git remote remove all
+
+# 2. Add 'all' pointing to origin initially (Sets up the Fetch URL)
+git remote add all $(git remote get-url origin)
+
+# 3. Explicitly tell Git that origin is ALSO a Push URL! (Crucial Step)
+git remote set-url --add --push all $(git remote get-url origin)
+
+# 4. Now add your MacBook and iMac as Push URLs
+git remote set-url --add --push all $(git remote get-url other1)
+git remote set-url --add --push all $(git remote get-url other2)
+```
