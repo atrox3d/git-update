@@ -68,6 +68,11 @@ git push origin --delete <old_name>
 ```bash
 `git fetch --all --prune`
 ```
+- git fetch --all: Downloads last modifications, commits and new branches from all the remotes.
+- --prune (o -p): Removes obsolete tracking branches (e.g. origin/old-branch) that have already been removed from the server.
+
+
+
 
 ### pull/push all branches
 ```bash
@@ -177,4 +182,9 @@ git grep -l "<file or dir name>" $(git for-each-ref --format='%(refname)' refs/h
 
 ```bash
 git restore --source=<branch_name> --worktree -- <path to restore>
+```
+
+### find root of the repo
+```bash
+git rev-parse --show-toplevel
 ```
