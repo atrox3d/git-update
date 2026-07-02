@@ -188,3 +188,8 @@ git restore --source=<branch_name> --worktree -- <path to restore>
 ```bash
 git rev-parse --show-toplevel
 ```
+
+### what was i doing? :D
+```bash
+git log --stat --oneline
+```
