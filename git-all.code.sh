@@ -47,6 +47,8 @@ exit
 # check each action against the valid actions list
 for action in "${ACTIONS[@]}"
 do
+	# ACTION=${1:?"syntax ${SYNTAX}"}
+	# ACTION=${ACTION,,}
 	[[ ${action} =~ ^(${VALID_ACTIONS}$) ]] || {
 		echo "syntax ${SYNTAX}"
 		exit 1
@@ -94,3 +96,5 @@ do
 		echo ""
 	done
 done
+
+
