@@ -15,6 +15,7 @@ VALID_ACTION_LIST=(
 	pushall
 	branch
 	list
+	remote
 )
 #
 # valid actions as a | separated string
@@ -70,7 +71,7 @@ do
 	}
 done
 
-SEARCH_PATH="${SEARCH_PATH%/*}"
+SEARCH_PATH="${SEARCH_PATH%/}"
 echo "SEARCH_PATH=${SEARCH_PATH}"
 
 # 
