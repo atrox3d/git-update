@@ -70,6 +70,7 @@ do
 	}
 done
 
+SEARCH_PATH="${SEARCH_PATH%/*}"
 echo "SEARCH_PATH=${SEARCH_PATH}"
 
 # 
