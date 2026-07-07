@@ -193,3 +193,51 @@ git rev-parse --show-toplevel
 ```bash
 git log --stat --oneline
 ```
+
+# USING GIT AS CONFIG MANAGER
+
+## using a ini file
+```bash
+config_path=$(git rev-parse --show-toplevel)/default_config.ini)
+git config -f "${config_path}" --get "${key}"
+# - where: 
+# 		- config_path is the path to the config file (e.g. config.ini)
+#       - key is section.key
+# 			- example: "mail.TO" gets "address":
+#       		[mail]
+#       		TO="address"
+#
+```
+
+## using a custom gitconfig
+```bash
+# 1. Create shared config
+touch .gitconfig.shared
+
+# 2. link the file git's local config (once for cloned repo)
+git config include.path "../.gitconfig.shared"
+
+# add a key (2 or 3 level syntax)
+git config -f .gitconfig.shared app.version "1.0.0"
+git config -f .gitconfig.shared database.dev.host "localhost"
+
+# read the key
+git config -f .gitconfig.shared app.version
+
+# commit and push the config
+git add .gitconfig.shared && git commit -m "Update config" && git push
+
+# overwrite a key only locally
+git config --local database.dev.host "127.0.0.1"
+
+# remove local override
+git config --local --unset database.dev.host
+
+##########################################################################
+#!/bin/bash
+
+# Legge il valore (prende quello locale se esiste, altrimenti quello condiviso)
+DB_HOST=$(git config --get database.dev.host)
+
+echo "db host: $DB_HOST"
+```
