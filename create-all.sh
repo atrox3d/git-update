@@ -1,0 +1,1 @@
+ORIGIN=$(git remote get-url origin);MACBOOK=$(git remote get-url macbook);IMAC=$(git remote get-url imac);echo $ORIGIN $MACBOOK $IMAC;git remote remove all;git remote add all $ORIGIN;git remote set-url --add --push all $ORIGIN;git remote set-url --add --push all $MACBOOK;git remote set-url --add --push all $IMAC;git remote -v
